@@ -10,27 +10,32 @@ import { AmountMath, AssetKind } from '@agoric/ertp';
 // Import the JSDoc/TypeScript types from Zoe
 import '@agoric/zoe/exported.js';
 
+
 /** @type {ContractStartFn} */
 const start = async (zcf) => {
-  const { pricePerNFT, tokenName } = zcf.getTerms();
+  const { pricePerNFT, nftName } = zcf.getTerms();
 
-  const mint = await zcf.makeZCFMint(tokenName, AssetKind.SET);
+  // Set up the mint
+  const mint = await zcf.makeZCFMint(nftName, AssetKind.SET);
   const { brand: NFTBrand } = mint.getIssuerRecord();
 
   let currentId = 1n;
   const { zcfSeat: sellerSeat } = zcf.makeEmptySeatKit();
 
+  /** @type {OfferHandler} */
   const buyNFTs = (buyerSeat) => {
-    // Reallocate the money
-    sellerSeat.incrementBy(buyerSeat.decrementBy({ Money: pricePerNFT }));
-
-    // Mint and reallocate the NFTs
+    // Mint the NFTs
     const amount = AmountMath.make(NFTBrand, [currentId]);
     mint.mintGains({ NFTs: amount }, buyerSeat);
     currentId += 1n;
 
+    // Take the money
+    sellerSeat.incrementBy(buyerSeat.decrementBy({ Money: pricePerNFT }));
+
     zcf.reallocate(buyerSeat, sellerSeat);
     buyerSeat.exit();
+
+    return 'your offer was successful';
   };
 
   const publicFacet = Far('NFT Drop', {
@@ -39,5 +44,6 @@ const start = async (zcf) => {
 
   return harden({ publicFacet });
 };
+
 harden(start);
 export { start };
