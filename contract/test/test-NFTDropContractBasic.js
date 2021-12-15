@@ -58,7 +58,7 @@ test('NFTDropContractBasic', async (t) => {
       Money: aLittleExtra,
     },
     want: {
-      NFTs: AmountMath.make(nftBrand, [1n]),
+      NFTs: AmountMath.make(nftBrand, harden([1n])),
     },
   });
 
@@ -78,7 +78,7 @@ test('NFTDropContractBasic', async (t) => {
   const nftPayoutAmount = await E(nftIssuer).getAmountOf(nftPayment);
 
   t.true(
-    AmountMath.isEqual(nftPayoutAmount, AmountMath.make(nftBrand, [1n])),
+    AmountMath.isEqual(nftPayoutAmount, AmountMath.make(nftBrand, harden([1n]))),
     `nftPayoutAmount value should be [1n] but was ${nftPayoutAmount.value}`,
   );
 
@@ -94,7 +94,7 @@ test('NFTDropContractBasic', async (t) => {
       Money: pricePerNFT,
     },
     want: {
-      NFTs: AmountMath.make(nftBrand, [2n]),
+      NFTs: AmountMath.make(nftBrand, harden([2n])),
     },
   });
 
@@ -111,7 +111,7 @@ test('NFTDropContractBasic', async (t) => {
   const nftPayoutAmount2 = await E(nftIssuer).getAmountOf(nftPayment2);
 
   t.true(
-    AmountMath.isEqual(nftPayoutAmount2, AmountMath.make(nftBrand, [2n])),
+    AmountMath.isEqual(nftPayoutAmount2, AmountMath.make(nftBrand, harden([2n]))),
     `nftPayoutAmount value should be [2n] but was ${nftPayoutAmount2.value}`,
   );
 
