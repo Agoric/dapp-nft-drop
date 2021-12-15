@@ -25,12 +25,12 @@ const start = async (zcf) => {
   /** @type {OfferHandler} */
   const buyNFTs = (buyerSeat) => {
     // Mint the NFTs
-    const amount = AmountMath.make(NFTBrand, [currentId]);
-    mint.mintGains({ NFTs: amount }, buyerSeat);
+    const amount = AmountMath.make(NFTBrand, harden([currentId]));
+    mint.mintGains(harden({ NFTs: amount }), buyerSeat);
     currentId += 1n;
 
     // Take the money
-    sellerSeat.incrementBy(buyerSeat.decrementBy({ Money: pricePerNFT }));
+    sellerSeat.incrementBy(buyerSeat.decrementBy(harden({ Money: pricePerNFT })));
 
     zcf.reallocate(buyerSeat, sellerSeat);
     buyerSeat.exit();
